@@ -4,8 +4,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String searchItem = "Claes Månsson";
-        String customerToSearch = searchItem.replaceAll("[,\\s]", "").trim().toLowerCase();
+        String searchItem = "ClaesMånsson*";
+        String customerToSearch = searchItem.replaceAll("[,\\s-_.\\*]", "").trim().toLowerCase();
+
         try {
             File file = new File("./prospects.txt");
             Scanner scanner = new Scanner(file);
@@ -22,7 +23,7 @@ public class Main {
                     double interest = Double.parseDouble(customerData[2].trim());
                     int years = Integer.parseInt(customerData[3].trim());
 //                    double years = Double.parseDouble(customerData[3].trim()); ?
-                    System.out.println("Customer: " + customerData[0].trim());
+                    System.out.println("Customer: " + customerData[0].replaceAll("[,\\s\"]", " ").trim());
                     System.out.println("Total Loan: " + totalLoan);
                     System.out.println("Interest: " + interest);
                     System.out.println("Years: " + years);
