@@ -6,9 +6,24 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String searchItem = "Clarence-andersson";
-//        String customerToSearch = searchItem.replaceAll("[,\\s-_.\\*]", "").trim().toLowerCase();
-        String customerToSearch = removeDiacritics(searchItem).replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
+        Scanner userInputScanner = new Scanner(System.in);
+        String searchItem = enterName(userInputScanner);
+        searchCustomer(searchItem);
+
+
+    }
+    private static String enterName(Scanner scanner) {
+        String searchItem;
+        do {
+            System.out.print("Enter customer name: ");
+            searchItem = scanner.nextLine().trim();
+        } while (searchItem.isEmpty() || !searchItem.matches(".*[a-zA-Z0-9].*"));
+
+        return searchItem;
+    }
+
+    private static void searchCustomer(String searchItem){
+        String customerToSearch = removeDiacritics(searchItem).replaceAll("[,\\s-_\\*]+", "").trim().toLowerCase();
 
         try {
             File file = new File("./prospects.txt");
@@ -18,10 +33,9 @@ public class Main {
             while (scanner.hasNextLine()){
                 String data = scanner.nextLine();
                 String[] customerData = data.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-//                String preparedCustomerName = customerData[0].replaceAll("[,\\s]", "").trim().toLowerCase();
                 String preparedCustomerName = removeDiacritics(customerData[0]).replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
 
-                if (preparedCustomerName.contains(customerToSearch)){
+                if (!preparedCustomerName.isEmpty() && preparedCustomerName.contains(customerToSearch)){
                     customerFound = true;
                     double totalLoan = Double.parseDouble(customerData[1].trim());
                     double interest = Double.parseDouble(customerData[2].trim());
@@ -31,6 +45,8 @@ public class Main {
                     System.out.println("Total Loan: " + totalLoan);
                     System.out.println("Interest: " + interest);
                     System.out.println("Years: " + years);
+                    double monthlyPayment = monthlyPayment(totalLoan, interest, years * 12);
+                    System.out.println("Monthly Payment: " + monthlyPayment);
                     break;
 
                 }
@@ -53,4 +69,10 @@ public class Main {
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
                 .toLowerCase(Locale.ENGLISH);
     }
+   private static  double monthlyPayment(double totalLoan, double interest, int numberOfPayments){
+        double monthlyInterest = interest / 100 / 12;
+        double monthlyPayement = totalLoan * monthlyInterest /
+                (1 - Math.pow(1 + monthlyInterest, -numberOfPayments));
+        return monthlyPayement;
+   }
 }
