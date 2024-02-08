@@ -1,11 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.Normalizer;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String searchItem = "ClaesMånsson*";
-        String customerToSearch = searchItem.replaceAll("[,\\s-_.\\*]", "").trim().toLowerCase();
+        String searchItem = "Clarence-andersson";
+//        String customerToSearch = searchItem.replaceAll("[,\\s-_.\\*]", "").trim().toLowerCase();
+        String customerToSearch = removeDiacritics(searchItem).replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
 
         try {
             File file = new File("./prospects.txt");
@@ -15,7 +18,8 @@ public class Main {
             while (scanner.hasNextLine()){
                 String data = scanner.nextLine();
                 String[] customerData = data.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                String preparedCustomerName = customerData[0].replaceAll("[,\\s]", "").trim().toLowerCase();
+//                String preparedCustomerName = customerData[0].replaceAll("[,\\s]", "").trim().toLowerCase();
+                String preparedCustomerName = removeDiacritics(customerData[0]).replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
 
                 if (preparedCustomerName.contains(customerToSearch)){
                     customerFound = true;
@@ -43,5 +47,10 @@ public class Main {
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + e.getMessage());
         }
+    }
+    private static String removeDiacritics(String input) {
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toLowerCase(Locale.ENGLISH);
     }
 }
