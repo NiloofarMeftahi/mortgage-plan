@@ -7,12 +7,19 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner userInputScanner = new Scanner(System.in);
-        while (true){
+        boolean continueSearch = true;
+
+        while (continueSearch){
             String searchItem = enterName(userInputScanner);
-            if(searchItem.equalsIgnoreCase("exit")){
+            if (searchItem.equalsIgnoreCase("exit")) {
                 break;
             }
-            searchCustomer(searchItem);
+
+            try {
+                searchCustomer(searchItem);
+            } catch (FileNotFoundException e) {
+                continueSearch = false;
+            }
         }
     }
     private static String enterName(Scanner scanner) {
@@ -25,7 +32,7 @@ public class Main {
         return searchItem;
     }
 
-    private static void searchCustomer(String searchItem){
+    private static void searchCustomer (String searchItem) throws FileNotFoundException{
         String customerToSearch = removeDiacritics(searchItem).replaceAll("[,\\s-_\\*]+", "").trim().toLowerCase();
 
         try {
@@ -36,7 +43,8 @@ public class Main {
             while (scanner.hasNextLine()){
                 String data = scanner.nextLine();
                 String[] customerData = data.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                String preparedCustomerName = removeDiacritics(customerData[0]).replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
+                String preparedCustomerName = removeDiacritics(customerData[0])
+                        .replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
 
                 if (!preparedCustomerName.isEmpty() && preparedCustomerName.contains(customerToSearch)){
                     customerFound = true;
@@ -59,6 +67,7 @@ public class Main {
 
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + e.getMessage());
+            throw e;
         }
     }
     private static String removeDiacritics(String input) {
