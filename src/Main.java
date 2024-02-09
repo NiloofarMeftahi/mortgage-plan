@@ -7,15 +7,18 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner userInputScanner = new Scanner(System.in);
-        String searchItem = enterName(userInputScanner);
-        searchCustomer(searchItem);
-
-
+        while (true){
+            String searchItem = enterName(userInputScanner);
+            if(searchItem.equalsIgnoreCase("exit")){
+                break;
+            }
+            searchCustomer(searchItem);
+        }
     }
     private static String enterName(Scanner scanner) {
         String searchItem;
         do {
-            System.out.print("Enter customer name: ");
+            System.out.print("Enter customer name. Enter exit to stop: ");
             searchItem = scanner.nextLine().trim();
         } while (searchItem.isEmpty() || !searchItem.matches(".*[a-zA-Z0-9].*"));
 
@@ -47,18 +50,12 @@ public class Main {
                     System.out.println("Years: " + years);
                     double monthlyPayment = monthlyPayment(totalLoan, interest, years * 12);
                     System.out.println("Monthly Payment: " + monthlyPayment);
-                    break;
-
                 }
-
-
-
             }
             if(!customerFound) {
-                System.err.println("Customer not found.");
+                System.out.println("Customer Not Found ");
+
             }
-
-
 
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + e.getMessage());
