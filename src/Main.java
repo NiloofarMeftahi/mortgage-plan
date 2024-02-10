@@ -1,8 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.Normalizer;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -49,6 +52,7 @@ public class Main {
             File file = new File("./prospects.txt");
             Scanner scanner = new Scanner(file);
             String[] headers = scanner.nextLine().split(","); /* find table headers */
+            Map<String, Integer> headerIndices = getHeaderIndices(headers);
             boolean customerFound = false;
             while (scanner.hasNextLine()){
                 String data = scanner.nextLine();
@@ -56,16 +60,16 @@ public class Main {
                 /*
                 * do not split the data if it is in double quotation
                  */
-                String preparedCustomerName = removeDiacritics(customerData[0])
+                String preparedCustomerName = removeDiacritics(customerData[headerIndices.get("Customer")])
                         .replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
 
                 if (!preparedCustomerName.isEmpty() && preparedCustomerName.contains(customerToSearch)){
                     customerFound = true;
-                    double totalLoan = Double.parseDouble(customerData[1].trim());
-                    double interest = Double.parseDouble(customerData[2].trim());
-                    int years = Integer.parseInt(customerData[3].trim());
+                    double totalLoan = Double.parseDouble(customerData[headerIndices.get("Total loan")].trim());
+                    double interest = Double.parseDouble(customerData[headerIndices.get("Interest")].trim());
+                    int years = Integer.parseInt(customerData[headerIndices.get("Years")].trim());
 //                    double years = Double.parseDouble(customerData[3].trim()); ?
-                    System.out.println("Customer: " + customerData[0]
+                    System.out.println("Customer: " + customerData[headerIndices.get("Customer")]
                             .replaceAll("[,\\s\"]", " ").trim());
                     /*
                     * prepare customer data for printing correctly and print it
@@ -89,6 +93,13 @@ public class Main {
             System.err.println("File not found: " + e.getMessage());
             throw e;
         }
+    }
+    private static Map<String, Integer> getHeaderIndices(String[] headers) {
+        Map<String, Integer> headerIndices = new HashMap<>();
+        for (int i = 0; i < headers.length; i++) {
+            headerIndices.put(headers[i], i);
+        }
+        return headerIndices;
     }
     private static String removeDiacritics(String input) {
         return Normalizer.normalize(input, Normalizer.Form.NFD)
