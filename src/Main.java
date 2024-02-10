@@ -7,17 +7,17 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner userInputScanner = new Scanner(System.in);
-        boolean continueSearch = true;
+        boolean continueSearch = true; // var check for continuing the program
 
         while (continueSearch){
-            String searchItem = enterName(userInputScanner);
-            if (searchItem.equalsIgnoreCase("exit")) {
+            String searchItem = enterName(userInputScanner); /* ask for the name of the customer */
+            if (searchItem.equalsIgnoreCase("exit")) {  /* if entered exit, stop the program */
                 break;
             }
 
             try {
-                searchCustomer(searchItem);
-            } catch (FileNotFoundException e) {
+                searchCustomer(searchItem); /* search for the entered name */
+            } catch (FileNotFoundException e) {  /* if file not found stop the program */
                 continueSearch = false;
             }
         }
@@ -25,7 +25,11 @@ public class Main {
     private static String enterName(Scanner scanner) {
         String searchItem;
         do {
-            System.out.print("Enter customer name. Enter exit to stop: ");
+            /*
+            * ask for customer name again if only pressed enter,
+            * or entered a symbol
+             */
+            System.out.println("Enter customer name. Enter exit to stop: ");
             searchItem = scanner.nextLine().trim();
         } while (searchItem.isEmpty() || !searchItem.matches(".*[a-zA-Z0-9].*"));
 
@@ -33,16 +37,25 @@ public class Main {
     }
 
     private static void searchCustomer (String searchItem) throws FileNotFoundException{
-        String customerToSearch = removeDiacritics(searchItem).replaceAll("[,\\s-_\\*]+", "").trim().toLowerCase();
+        String customerToSearch = removeDiacritics(searchItem)
+                .replaceAll("[,\\s-_\\*]+", "").trim().toLowerCase();
+        /*
+        * remove diacritics, comma, dash, underline and star
+        * from the name entered for search.
+        * transform to lowercase
+        */
 
         try {
             File file = new File("./prospects.txt");
             Scanner scanner = new Scanner(file);
-            String[] headers = scanner.nextLine().split(",");
+            String[] headers = scanner.nextLine().split(","); /* find table headers */
             boolean customerFound = false;
             while (scanner.hasNextLine()){
                 String data = scanner.nextLine();
                 String[] customerData = data.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                /*
+                * do not split the data if it is in double quotation
+                 */
                 String preparedCustomerName = removeDiacritics(customerData[0])
                         .replaceAll("[,\\s-_\\*]", "").trim().toLowerCase();
 
@@ -52,11 +65,18 @@ public class Main {
                     double interest = Double.parseDouble(customerData[2].trim());
                     int years = Integer.parseInt(customerData[3].trim());
 //                    double years = Double.parseDouble(customerData[3].trim()); ?
-                    System.out.println("Customer: " + customerData[0].replaceAll("[,\\s\"]", " ").trim());
+                    System.out.println("Customer: " + customerData[0]
+                            .replaceAll("[,\\s\"]", " ").trim());
+                    /*
+                    * prepare customer data for printing correctly and print it
+                     */
                     System.out.println("Total Loan: " + totalLoan);
                     System.out.println("Interest: " + interest);
                     System.out.println("Years: " + years);
                     double monthlyPayment = monthlyPayment(totalLoan, interest, years * 12);
+                    /*
+                    * calculate the monthly payment
+                    */
                     System.out.println("Monthly Payment: " + monthlyPayment);
                 }
             }
