@@ -1,0 +1,2 @@
+Customer,Total loan,Interest,Years
+"Clarencé,Andersson",2000,6,4

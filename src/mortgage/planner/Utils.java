@@ -1,3 +1,4 @@
+package mortgage.planner;
 
 import java.io.*;
 import java.text.Normalizer;
@@ -71,7 +72,7 @@ public class Utils {
     // Method to check if a string matches the search string with wildcard support
     private static boolean isMatch(String str, String searchString) {
         // Convert the search string to regex pattern
-        String regex = searchString.toLowerCase().replace("*", ".*");
+        String regex = ".*" + searchString.toLowerCase().replace("*", ".*") + ".*";
         return removeDiacritics(str.toLowerCase()).matches(removeDiacritics(regex));
     }
     private static String removeDiacritics(String input) {

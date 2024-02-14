@@ -1,3 +1,4 @@
+package mortgage.planner;
 
 import java.util.Scanner;
 public class Main {

@@ -1,3 +1,5 @@
+package mortgage.planner;
+
 public class Customer {
     // Properties
     private String customerName;
