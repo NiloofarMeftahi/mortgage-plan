@@ -30,3 +30,5 @@ To exit the application, simply type "exit" when prompted.
 
 ## Testing
 The project includes a set of unit tests to ensure its functionality. These tests cover file parsing, customer search, and mathematical calculations. To run the tests, execute the UnitTest class.
+## Future Work
+While the current version of the project does not utilize a dedicated build tool such as Gradle or Maven, integrating one could significantly enhance the development, testing, and deployment processes. Regrettably, due to technical challenges, the successful integration of a build tool was not achieved in the current iteration. However, addressing this remains a priority for future enhancements.
