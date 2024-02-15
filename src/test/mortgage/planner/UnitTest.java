@@ -90,6 +90,7 @@ public class UnitTest {
         List<Customer> matchingCustomers1 = searchCustomersByName(customers, "Éowyn");
         List<Customer> matchingCustomers2 = searchCustomersByName(customers, "Eowyn");
 
+
         // Verify
         assertEquals(1, matchingCustomers1.size());
         assertEquals(1, matchingCustomers2.size());
